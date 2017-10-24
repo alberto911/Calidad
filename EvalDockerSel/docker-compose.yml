@@ -4,23 +4,27 @@ services:
         image: mysql:latest
         volumes:
             - db_data:/var/lib/mysql
+        networks:
+            - mynet
         ports: 
             - "3306:3306"
         environment: 
-            MYSQL_ROOT_PASSWOD: root-password
+            MYSQL_ROOT_PASSWORD: root-password
             MYSQL_DATABASE: opencart
             MYSQL_USER: admin
             MYSQL_PASSWORD: admin
 
     opencart:
-        depends_on:
-            - db
         image: apache-php:opencart
         ports: 
             - "4000:80"
-        environment:
-            DB_HOST: db:3306
-        restart: always
-
+        networks:
+            - mynet
+        links:
+            - db
+        
 volumes:
     db_data:
+
+networks:
+    mynet:
